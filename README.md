@@ -1,0 +1,1 @@
+MongoDB blob storage for Universal Password Manager with HTTP Basic authentication.
