@@ -17,20 +17,8 @@ module.exports = function(mongoose) {
 
     return {
         Users: models.Users,
-        authenticate: authenticate,
         register: register,
     }
-}
-
-var authenticate = function(req, res, next) {
-    passport.authenticate('basic', function (err, user, info) {
-        console.log('err', err);
-        console.log('info', info);
-        if (err) return res.redirect('invalidpassword');
-        else if (!user) return res.redirect('missingauth');
-        // req.user = user;
-        return next();
-    })(req, res, next);
 }
 
 var register = function(data, callback) {
