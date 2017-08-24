@@ -1,0 +1,79 @@
+var passport = require('passport');
+var bcrypt = require('bcrypt-nodejs');
+
+var models;
+
+module.exports = function(mongoose) {
+    var userSchema = mongoose.Schema({
+        username: String,
+        password: String,
+        // passwordDatabase: Buffer,
+    });
+
+    models = {
+        Users: mongoose.model('Users', userSchema)
+    }
+    seedDatabase(models);
+
+    return {
+        Users: models.Users,
+        authenticate: authenticate,
+        register: register,
+    }
+}
+
+var authenticate = function(req, res, next) {
+    passport.authenticate('basic', function (err, user, info) {
+        console.log('err', err);
+        console.log('info', info);
+        if (err) return res.redirect('invalidpassword');
+        else if (!user) return res.redirect('missingauth');
+        // req.user = user;
+        return next();
+    })(req, res, next);
+}
+
+var register = function(data, callback) {
+    console.log('Registering user: ', data.username);
+    bcrypt.hash(data.password, null, null, function (err, hashedPass) {
+        if (err) {
+            console.error(err);
+            callback(err);
+        }
+        var user = new models.Users({
+            username: data.username,
+            password: hashedPass,
+        });
+
+        var userExists = models.Users.findOne({username: user.username})
+            .then(function(doc) {
+                if (callback) {
+                    callback("Username is taken", null);
+                }
+            });
+
+        user.save(function (saveErr, user) {
+            if (callback) {
+                if (saveErr) callback(saveErr, null);
+                else callback(null, user);
+            }
+        });
+    });
+}
+
+function seedDatabase(models) {
+    var query = models.Users.findOne({username: 'test'})
+        .catch(function(err) {
+            console.error(err);
+        })
+        .then(function(doc) {
+            if (doc) {
+                return;
+            }
+            var user = {
+                username: 'test',
+                password: 'pass'
+            }
+            register(user);
+        })
+}
