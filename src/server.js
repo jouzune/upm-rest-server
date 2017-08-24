@@ -56,8 +56,8 @@ router.post('/user', urlEncodedParser, function(req, res) {
         });
     }
 });
-router.get('/user/database', auth.authenticate, function(req, res) {
-    res.send('/user/database not-yet');
+router.get('/user', auth.authenticate, function(req, res) {
+    res.send('GET /user unimplemented');
 });
 
 router.post('/push', urlEncodedParser, function(req, res) {
