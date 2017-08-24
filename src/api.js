@@ -30,26 +30,42 @@ var invalidPassword = function(req, res) {
 };
 
 var database = function(req, res) {
-    res.send('GET /user unimplemented');
+    var data = {
+        username: req.user.username
+    }
+
+    db.User.findOne(data)
+    .exec()
+    .then(function(user) {
+        res.status(200).send(user.database);
+    }, function(reason) {
+        res.status(404).send(reason);
+    })
+    .catch(function(e) {
+        console.error(e);
+        res.status(500).send(e);
+    });
 };
 
 var databasePost = function(req, res) {
-    if (!req.body.username) {
-        res.status(400).send("No username specified");
-    }
-    else if (!req.body.password) {
-        res.status(400).send("No password specified");
+    if (!req.body.database) {
+        res.status(400).send("Missing database parameter");
     }
     else {
-        db.register({
-            username: req.body.username,
-            password: req.body.password,
-        }, function(err, user) {
-            if (err) {
-                res.status(400).send(err);
-            } else {
-                res.status(200).json(user);
-            }
+        var data = {
+            username: req.user.username,
+            password: req.user.password,
+            database: req.database
+        }
+        db.Users.findOneAndUpdate({username: data.username}, data, {upsert: true})
+        .exec()
+        .then(function(doc) {
+            res.status(201);
+        })
+        .catch(function(e) {
+            console.error(e);
+            res.status(500).send(e);
         });
+        
     }
 };
