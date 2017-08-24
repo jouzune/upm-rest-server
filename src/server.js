@@ -22,6 +22,7 @@ var router = express.Router();
 router.get(endpoints.UNAUTHORIZED, api.unauthorized);
 router.get(endpoints.MISSING_AUTH, api.missingAuth);
 router.get(endpoints.INVALID_PASSWORD, api.invalidPassword);
+router.get(endpoints.USER_NOT_FOUND, api.userNotFound);
 router.get(endpoints.DATABASE, auth.authenticate, api.database);
 router.post(endpoints.DATABASE, auth.authenticate, urlEncodedParser, api.databasePost);
 

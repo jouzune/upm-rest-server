@@ -5,9 +5,10 @@ module.exports = function(_db) {
     db = _db;
 
     return {
-        unauthorized: unauthorized,
         missingAuth: missingAuth,
         invalidPassword: invalidPassword,
+        userNotFound: userNotFound,
+        unauthorized: unauthorized,
         database: database,
         databasePost: databasePost
     };
@@ -34,12 +35,12 @@ var database = function(req, res) {
         username: req.user.username
     }
 
-    db.User.findOne(data)
+    db.Users.findOne(data)
     .exec()
     .then(function(user) {
         res.status(200).send(user.database);
     }, function(reason) {
-        res.status(404).send(reason);
+        res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
     })
     .catch(function(e) {
         console.error(e);
@@ -55,12 +56,13 @@ var databasePost = function(req, res) {
         var data = {
             username: req.user.username,
             password: req.user.password,
-            database: req.database
+            database: req.body.database
         }
         db.Users.findOneAndUpdate({username: data.username}, data, {upsert: true})
         .exec()
         .then(function(doc) {
-            res.status(201);
+            console.log("UPSERTED:\n", doc);
+            res.status(201).json(doc);
         })
         .catch(function(e) {
             console.error(e);
