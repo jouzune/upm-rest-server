@@ -3,5 +3,6 @@ module.exports = {
     UNAUTHORIZED: '/unauthorized',
     USER_NOT_FOUND: '/user-not-found',
     MISSING_AUTH: '/missing-auth',
-    INVALID_PASSWORD: '/invalid-password'
+    INVALID_PASSWORD: '/invalid-password',
+    DATABASE: '/database'
 }

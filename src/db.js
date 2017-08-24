@@ -18,8 +18,8 @@ module.exports = function(mongoose) {
     return {
         Users: models.Users,
         register: register,
-    }
-}
+    };
+};
 
 var register = function(data, callback) {
     console.log('Registering user: ', data.username);

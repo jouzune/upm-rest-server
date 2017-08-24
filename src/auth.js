@@ -8,8 +8,8 @@ module.exports = function(_db) {
 
     return {
         authenticate: authenticate
-    }
-}
+    };
+};
 
 passport.use(new PassportStrategy(
     function(username, password, cb) {
