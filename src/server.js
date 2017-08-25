@@ -16,14 +16,16 @@ var db = require('./db')(mongoose),
     api = require('./api')(db);
 
 var urlEncodedParser = bodyParser.urlencoded({ extended: false });
-var rawParser = bodyParser.raw({extended: false});
+var rawParser = bodyParser.raw();
 
 var router = express.Router();
 router.get(endpoints.UNAUTHORIZED, api.unauthorized);
 router.get(endpoints.MISSING_AUTH, api.missingAuth);
 router.get(endpoints.INVALID_PASSWORD, api.invalidPassword);
 router.get(endpoints.USER_NOT_FOUND, api.userNotFound);
-router.get(endpoints.DATABASE, auth.authenticate, api.database);
+
+router.get(endpoints.DATABASE, auth.authenticate, api.databaseGet);
+router.put(endpoints.DATABASE, urlEncodedParser, api.databasePut);
 router.post(endpoints.DATABASE, auth.authenticate, urlEncodedParser, api.databasePost);
 router.delete(endpoints.DATABASE, auth.authenticate, api.databaseDelete);
 
@@ -38,6 +40,6 @@ router.post('/blob-test', urlEncodedParser, function(req, res) {
 var app = express();
 app.use(endpoints.BASE, router);
 app.use(function(req, res, next) {
-    res.status(404).send('Page not found');
+    res.status(404).send('404: not found');
 });
 app.listen(3000);

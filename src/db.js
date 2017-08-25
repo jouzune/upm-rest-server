@@ -7,7 +7,7 @@ module.exports = function(mongoose) {
     var userSchema = mongoose.Schema({
         username: String,
         password: String,
-        database: Buffer,
+        database: String,
     });
 
     models = {
@@ -32,20 +32,24 @@ var register = function(data, callback) {
             username: data.username,
             password: hashedPass,
         });
+        if (data.database) user.database = data.database;
 
         var userExists = models.Users.findOne({username: user.username})
             .then(function(doc) {
-                if (callback) {
-                    callback("Username is taken", null);
+                if (doc) {
+                    if (callback) {
+                        callback("Username is taken", null);
+                    }
+                } else {
+                    user.save(function (saveErr, user) {
+                        if (callback) {
+                            if (saveErr) callback(saveErr, null);
+                            else callback(null, user);
+                        }
+                    });
                 }
             });
 
-        user.save(function (saveErr, user) {
-            if (callback) {
-                if (saveErr) callback(saveErr, null);
-                else callback(null, user);
-            }
-        });
     });
 }
 
@@ -63,5 +67,5 @@ function seedDatabase(models) {
                 password: 'pass'
             }
             register(user);
-        })
+        });
 }
