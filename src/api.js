@@ -79,14 +79,17 @@ var databasePut = function (req, res) {
 };
 
 var databasePost = function (req, res) {
-    if (!req.body.database) {
-        res.status(400).send("Missing database parameter");
+    console.log(req.body);
+    if (!req.body) {
+    // if (!req.body.database) {
+        res.status(400).send("Missing body");
     }
     else {
         var data = {
             // username: req.user.username,
             // password: req.user.password,
-            database: req.body.database
+            database: req.body,
+            // database: req.body.database,
         };
         db.Users.findOneAndUpdate({ username: req.user.username }, data, { upsert: true })
             .exec()
