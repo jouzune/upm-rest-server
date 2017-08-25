@@ -10,7 +10,8 @@ module.exports = function(_db) {
         userNotFound: userNotFound,
         unauthorized: unauthorized,
         database: database,
-        databasePost: databasePost
+        databasePost: databasePost,
+        databaseDelete: databaseDelete,
     };
 };
 
@@ -57,7 +58,7 @@ var databasePost = function(req, res) {
             username: req.user.username,
             password: req.user.password,
             database: req.body.database
-        }
+        };
         db.Users.findOneAndUpdate({username: data.username}, data, {upsert: true})
         .exec()
         .then(function(doc) {
@@ -70,4 +71,20 @@ var databasePost = function(req, res) {
         });
         
     }
+};
+
+var databaseDelete = function(req, res) {
+    var data = {
+        username: req.user.username
+    };
+    db.Users.findOneAndRemove(data)
+    .exec()
+    .then(function(doc) {
+        console.log("DELETED:\n", doc);
+        res.status(200).json(doc);
+    })
+    .catch(function(e) {
+        console.error(e);
+        res.status(500).send(e);
+    });
 };

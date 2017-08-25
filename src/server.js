@@ -25,6 +25,7 @@ router.get(endpoints.INVALID_PASSWORD, api.invalidPassword);
 router.get(endpoints.USER_NOT_FOUND, api.userNotFound);
 router.get(endpoints.DATABASE, auth.authenticate, api.database);
 router.post(endpoints.DATABASE, auth.authenticate, urlEncodedParser, api.databasePost);
+router.delete(endpoints.DATABASE, auth.authenticate, api.databaseDelete);
 
 router.get('/auth-test', auth.authenticate, function (req, res) {
     res.json(req.user);
