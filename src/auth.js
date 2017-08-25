@@ -27,6 +27,7 @@ passport.use(new PassportStrategy(
                 console.log('  Valid password:', isValidPassword);
                 return isValidPassword ? cb(null, doc) : cb("Invalid password", false);
             } else {
+                // res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
                 cb(null, false);
             }
         });
@@ -36,10 +37,11 @@ passport.use(new PassportStrategy(
 var authenticate = function(req, res, next) {
     console.log('Basic Authentication')
     passport.authenticate('basic', function (err, user, info) {
+        console.log('  user: ', user);
         console.log('  err: ', err);
         console.log('  info: ', info);
         if (err) return res.redirect(endpoints.BASE + endpoints.INVALID_PASSWORD);
-        else if (!user) return res.redirect(endpoints.BASE + endpoints.MISSING_AUTH);
+        else if (!user) return res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
         req.user = user;
         return next();
     })(req, res, next);
