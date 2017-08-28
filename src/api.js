@@ -97,7 +97,7 @@ var databasePost = function (req, res) {
                 console.log("POST:\n", doc);
                 res.status(201).json({
                     username: doc.username,
-                    database: doc.database
+                    database: req.body
                 });
             }, function(err) {
                 console.error(err);

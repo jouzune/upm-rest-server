@@ -36,7 +36,7 @@ passport.use(new PassportStrategy(
 
 var authenticate = function(req, res, next) {
     passport.authenticate('basic', function (err, user, info) {
-        if (err) console.err('  ', err);
+        if (err) console.error('  ', err);
         if (info) console.log('  info: ', info);
         if (err) return res.redirect(endpoints.BASE + endpoints.INVALID_PASSWORD);
         else if (!user) return res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
