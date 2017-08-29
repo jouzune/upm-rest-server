@@ -21,23 +21,11 @@ var rawParser = bodyParser.raw({
 });
 
 var router = express.Router();
-router.get(endpoints.UNAUTHORIZED, api.unauthorized);
-router.get(endpoints.MISSING_AUTH, api.missingAuth);
-router.get(endpoints.INVALID_PASSWORD, api.invalidPassword);
-router.get(endpoints.USER_NOT_FOUND, api.userNotFound);
 
 router.get(endpoints.DATABASE, auth.authenticate, api.databaseGet);
 router.put(endpoints.DATABASE, urlEncodedParser, api.databasePut);
 router.post(endpoints.DATABASE, auth.authenticate, rawParser, api.databasePost);
 router.delete(endpoints.DATABASE, auth.authenticate, api.databaseDelete);
-
-router.get('/auth-test', auth.authenticate, function (req, res) {
-    res.json(req.user);
-});
-router.post('/blob-test', urlEncodedParser, function(req, res) {
-    console.log(req.body);
-    res.send(req.body);
-});
 
 var app = express();
 app.use(endpoints.BASE, router);

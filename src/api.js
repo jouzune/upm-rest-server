@@ -5,31 +5,11 @@ module.exports = function (_db) {
     db = _db;
 
     return {
-        missingAuth: missingAuth,
-        invalidPassword: invalidPassword,
-        userNotFound: userNotFound,
-        unauthorized: unauthorized,
         databaseGet: databaseGet,
         databasePut: databasePut,
         databasePost: databasePost,
         databaseDelete: databaseDelete,
     };
-};
-
-var unauthorized = function (req, res) {
-    res.status(401).send('Unauthorized');
-};
-
-var userNotFound = function (req, res) {
-    res.status(404).send('User not found');
-};
-
-var missingAuth = function (req, res) {
-    res.status(400).send('No authentication supplied');
-};
-
-var invalidPassword = function (req, res) {
-    res.status(400).send('Invalid password');
 };
 
 var databaseGet = function (req, res) {
@@ -40,9 +20,9 @@ var databaseGet = function (req, res) {
     db.Users.findOne(data)
         .exec()
         .then(function (user) {
-            res.status(200).send(user.database);
+            res.status(200).type('text/plain; charset=us-ascii').send(user.database);
         }, function (reason) {
-            res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
+            res.status(404).send('User not found');
         })
         .catch(function (e) {
             console.error(e);
@@ -52,11 +32,11 @@ var databaseGet = function (req, res) {
 
 var databasePut = function (req, res) {
     if (!req.body.username) {
-        res.status(400).send("Missing username parameter");
+        res.status(400).send('Missing username parameter');
     } else if (!req.body.password) {
-        res.status(400).send("Missing password parameter");
+        res.status(400).send('Missing password parameter');
     } else if (!req.body.database) {
-        res.status(400).send("Missing database parameter");
+        res.status(400).send('Missing database parameter');
     } else {
         var data = {
             username: req.body.username,
@@ -69,7 +49,7 @@ var databasePut = function (req, res) {
                 console.error(err);
                 res.status(500).send(err);
             } else {
-                res.status(201).send({
+                res.status(201).json({
                     username: data.username,
                     database: data.database
                 });
@@ -79,15 +59,12 @@ var databasePut = function (req, res) {
 };
 
 var databasePost = function (req, res) {
-    console.log(req.body);
     if (!req.body) {
     // if (!req.body.database) {
         res.status(400).send("Missing body");
     }
     else {
         var data = {
-            // username: req.user.username,
-            // password: req.user.password,
             database: req.body,
             // database: req.body.database,
         };

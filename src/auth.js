@@ -38,8 +38,8 @@ var authenticate = function(req, res, next) {
     passport.authenticate('basic', function (err, user, info) {
         if (err) console.error('  ', err);
         if (info) console.log('  info: ', info);
-        if (err) return res.redirect(endpoints.BASE + endpoints.INVALID_PASSWORD);
-        else if (!user) return res.redirect(endpoints.BASE + endpoints.USER_NOT_FOUND);
+        if (err) return res.status(400).send("Invalid password");
+        else if (!user) return res.status(404).send("User not found");
         req.user = user;
         return next();
     })(req, res, next);
